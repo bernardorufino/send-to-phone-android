@@ -26,13 +26,18 @@ public class SentItemsManager {
     }
 
     private List<SentItem> mSentItems;
+    private int mNextId = 0;
 
     // Prevents outside instantiation
     private SentItemsManager() {
     }
 
+    public boolean hasLoaded() {
+        return mSentItems != null;
+    }
+
     public void load(Context context) {
-        if (mSentItems != null) {
+        if (hasLoaded()) {
             return;
         }
         try {
@@ -41,6 +46,7 @@ public class SentItemsManager {
             mSentItems = new ArrayList<>();
             SentItem sentItem = SentItem.read(bufferedReader);
             while (sentItem != null) {
+                mNextId = Math.max(mNextId, sentItem.getId() + 1);
                 mSentItems.add(sentItem);
                 sentItem = SentItem.read(bufferedReader);
             }
@@ -59,6 +65,9 @@ public class SentItemsManager {
             FileOutputStream output = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(output));
             for (SentItem sentItem : mSentItems) {
+                if (sentItem.getId() == SentItem.UNDEFINED_ID) {
+                    sentItem.setId(mNextId++);
+                }
                 sentItem.write(bufferedWriter);
             }
             bufferedWriter.close();
@@ -79,6 +88,21 @@ public class SentItemsManager {
 
     public int count() {
         return getBackingList().size();
+    }
+
+    public SentItem getById(int id) {
+        checkArgument(id != SentItem.UNDEFINED_ID, "Parameter id can't be undefined");
+
+        for (SentItem sentItem : mSentItems) {
+            if (sentItem.getId() == id) {
+                return sentItem;
+            }
+        }
+        return null;
+    }
+
+    public SentItem checkedGetById(int id) {
+        return checkNotNull(getById(id), "No SentItem found with id " + id);
     }
 
     public void insert(SentItem sentItem) {

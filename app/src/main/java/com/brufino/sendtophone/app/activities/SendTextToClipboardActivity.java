@@ -1,10 +1,11 @@
-package com.brufino.sendtophone.app;
+package com.brufino.sendtophone.app.activities;
 
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import com.brufino.sendtophone.app.Helper;
 
 import static com.google.common.base.Preconditions.*;
 

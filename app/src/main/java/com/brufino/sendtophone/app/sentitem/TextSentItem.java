@@ -7,7 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import com.brufino.sendtophone.app.R;
-import com.brufino.sendtophone.app.SendTextToClipboardActivity;
+import com.brufino.sendtophone.app.activities.SendTextToClipboardActivity;
 import org.joda.time.DateTime;
 
 public class TextSentItem extends SentItem {

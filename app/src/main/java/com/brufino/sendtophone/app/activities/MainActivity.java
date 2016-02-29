@@ -1,4 +1,4 @@
-package com.brufino.sendtophone.app;
+package com.brufino.sendtophone.app.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -13,6 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.Toast;
+import com.brufino.sendtophone.app.R;
+import com.brufino.sendtophone.app.RegistrationIntentService;
+import com.brufino.sendtophone.app.SentItemsAdapter;
 import com.brufino.sendtophone.app.sentitem.SentItem;
 import com.brufino.sendtophone.app.sentitem.SentItemsManager;
 import com.google.android.gms.common.ConnectionResult;
@@ -61,16 +64,15 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        mSentItemsManager = SentItemsManager.getInstance();
-        mSentItemsManager.load(this);
-        mSentItemsManager.addChangeListener(mSentItemsListChangeListener);
-        mSentItemsList = mSentItemsManager.getBackingList();
-
         mSentItemsRecyclerView = (RecyclerView) findViewById(R.id.list);
         mListLayoutManager = new LinearLayoutManager(this);
         mSentItemsRecyclerView.setLayoutManager(mListLayoutManager);
-        mListAdapter = new SentItemsAdapter(mSentItemsList);
+        mListAdapter = new SentItemsAdapter();
         mSentItemsRecyclerView.setAdapter(mListAdapter);
+
+        mSentItemsManager = SentItemsManager.getInstance();
+        mSentItemsManager.addChangeListener(mSentItemsListChangeListener);
+        new LoadSentItemsManagerTask().execute();
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mSentItemCallback);
         itemTouchHelper.attachToRecyclerView(mSentItemsRecyclerView);
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Integer... params) {
             int position = params[0];
             mSentItemsList.remove(position);
-            mSentItemsManager.save(MainActivity.this);
+            mSentItemsManager.save(getApplicationContext());
             return null;
         }
 
@@ -139,7 +141,21 @@ public class MainActivity extends AppCompatActivity {
                             .setAction("UNDO", new UndoSentItemRemoveListener())
                             .show();
                 }
-            }, 150);
+            }, 100);
+        }
+    }
+
+    private class LoadSentItemsManagerTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            mSentItemsManager.load(getApplicationContext());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mSentItemsList = mSentItemsManager.getBackingList();
+            mListAdapter.setBackingList(mSentItemsList);
         }
     }
 

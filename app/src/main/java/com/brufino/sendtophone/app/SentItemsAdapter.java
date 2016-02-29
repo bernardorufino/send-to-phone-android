@@ -5,14 +5,16 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import com.brufino.sendtophone.app.sentitem.SentItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SentItemsAdapter extends RecyclerView.Adapter<SentItemViewHolder> {
 
-    private final List<SentItem> mList;
+    private List<SentItem> mList = new ArrayList<>();
 
-    public SentItemsAdapter(List<SentItem> list) {
-        mList = list;
+    public void setBackingList(List<SentItem> sentItemBackingList) {
+        mList = sentItemBackingList;
+        notifyDataSetChanged();
     }
 
     @Override

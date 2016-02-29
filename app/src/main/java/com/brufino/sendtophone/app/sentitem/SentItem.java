@@ -7,8 +7,9 @@ import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.support.v4.app.NotificationCompat;
 import android.view.View;
-import com.brufino.sendtophone.app.MainActivity;
 import com.brufino.sendtophone.app.R;
+import com.brufino.sendtophone.app.activities.MainActivity;
+import com.brufino.sendtophone.app.activities.OpenProxyActivity;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -21,8 +22,8 @@ import static com.google.common.base.Preconditions.*;
 
 public abstract class SentItem {
 
-
-    public static final DateTimeFormatter ISO_DATE_TIME_FORMATTER = ISODateTimeFormat.dateTime();
+    public static final int UNDEFINED_ID = -1;
+    private static final DateTimeFormatter ISO_DATE_TIME_FORMATTER = ISODateTimeFormat.dateTime();
 
     public static SentItem create(String type, String title, String description, String data, DateTime date) {
         switch (type) {
@@ -47,15 +48,26 @@ public abstract class SentItem {
             return null;
         }
         String errorMsg = "Input terminated unexpectedly";
-        String type = line.trim();
+
+        int id = Integer.parseInt(line.trim());
+        String type = checkNotNull(input.readLine(), errorMsg).trim();
         String title = checkNotNull(input.readLine(), errorMsg).trim();
         String description = checkNotNull(input.readLine(), errorMsg).trim();
         String data = checkNotNull(input.readLine(), errorMsg).trim();
         String dateString = checkNotNull(input.readLine(), errorMsg).trim();
         DateTime date = ISO_DATE_TIME_FORMATTER.parseDateTime(dateString);
-        return create(type, title, description, data, date);
+        String readString = checkNotNull(input.readLine(), errorMsg).trim();
+        boolean read = Boolean.parseBoolean(readString);
+
+        SentItem sentItem = create(type, title, description, data, date);
+
+        sentItem.mId = id;
+        sentItem.mRead = read;
+
+        return sentItem;
     }
 
+    private int mId;
     private String mDescription;
     private String mTitle;
     private String mData;
@@ -63,11 +75,20 @@ public abstract class SentItem {
     private boolean mRead;
 
     public SentItem(String title, String description, String data, DateTime date) {
+        mId = UNDEFINED_ID;
         mTitle = title;
         mDescription = description;
         mData = data;
         mDate = date;
         mRead = false;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    /* package private */ void setId(int id) {
+        mId = id;
     }
 
     public String getTitle(Context context) {
@@ -96,16 +117,28 @@ public abstract class SentItem {
 
     public void write(BufferedWriter output) throws IOException {
         String n = System.getProperty("line.separator");
+        checkState(getId() != UNDEFINED_ID);
+        output.write(getId() + n);
         output.write(getType() + n);
         output.write(mTitle + n);
         output.write(mDescription + n);
         output.write(mData + n);
         output.write(ISO_DATE_TIME_FORMATTER.print(mDate) + n);
+        output.write(Boolean.toString(mRead) + n);
     }
 
     public abstract String getType();
 
     public abstract Intent getOpenIntent(Context context);
+
+    public Intent getOpenIntentProxy(Context context) {
+        checkState(mId != UNDEFINED_ID, "Can't get the proxied intent without saving the object first");
+
+        Intent intent = new Intent(context, OpenProxyActivity.class);
+        intent.putExtra(OpenProxyActivity.EXTRA_INTENT, getOpenIntent(context));
+        intent.putExtra(OpenProxyActivity.EXTRA_SENT_ITEM_ID, mId);
+        return intent;
+    }
 
     public abstract Drawable getIconDrawable(Context context);
 
@@ -120,7 +153,7 @@ public abstract class SentItem {
                 .setContentText(mDescription)
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-        Intent intent = (clickToOpen) ? getOpenIntent(context) : new Intent(context, MainActivity.class);
+        Intent intent = (clickToOpen) ? getOpenIntentProxy(context) : new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
