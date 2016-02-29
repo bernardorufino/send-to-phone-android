@@ -58,7 +58,7 @@ public class SentItemViewHolder extends RecyclerView.ViewHolder {
 //        circleDrawable.setColorFilter(new PorterDuffColorFilter(circleColor, PorterDuff.Mode.MULTIPLY));
 //        mColoredCircle.setImageDrawable(circleDrawable);
 
-        mTitleView.setText(sentItem.getTitle());
+        mTitleView.setText(sentItem.getTitle(mTitleView.getContext()));
         mDescriptionView.setText(sentItem.getDescription());
 
         mDate.setText(DATE_FORMATTER.print(sentItem.getDate()));

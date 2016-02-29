@@ -19,6 +19,11 @@ public class TextSentItem extends SentItem {
     }
 
     @Override
+    public String getTitle(Context context) {
+        return context.getString(R.string.text_sent_item_title);
+    }
+
+    @Override
     public Intent getOpenIntent(Context context) {
         Intent intent = new Intent(context, SendTextToClipboardActivity.class);
         intent.putExtra(Intent.EXTRA_TEXT, getData());

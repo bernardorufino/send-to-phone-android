@@ -2,13 +2,10 @@ package com.brufino.sendtophone.app.sentitem;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import org.joda.time.DateTime;
-
-import java.util.List;
 
 public class UrlSentItem extends SentItem {
 
@@ -16,6 +13,12 @@ public class UrlSentItem extends SentItem {
 
     public UrlSentItem(String title, String description, String data, DateTime date) {
         super(title, description, data, date);
+    }
+
+    @Override
+    public String getTitle(Context context) {
+        ResolveInfo info = resolveUrl(context);
+        return info.loadLabel(context.getPackageManager()).toString();
     }
 
     @Override
@@ -32,10 +35,14 @@ public class UrlSentItem extends SentItem {
 
     @Override
     public Drawable getIconDrawable(Context context) {
+        ResolveInfo info = resolveUrl(context);
+        return info.loadIcon(context.getPackageManager());
+    }
+
+    private ResolveInfo resolveUrl(Context context) {
         Intent intent = getOpenIntent(context);
-        PackageManager packageManager = context.getPackageManager();
-        List<ResolveInfo> infos = packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
-        ResolveInfo info = infos.get(0);
-        return info.loadIcon(packageManager);
+        return context.getPackageManager()
+                .queryIntentActivities(intent, 0)
+                .get(0);
     }
 }

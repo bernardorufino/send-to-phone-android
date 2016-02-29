@@ -70,7 +70,7 @@ public abstract class SentItem {
         mRead = false;
     }
 
-    public String getTitle() {
+    public String getTitle(Context context) {
         return mTitle;
     }
 
@@ -116,7 +116,7 @@ public abstract class SentItem {
     public NotificationCompat.Builder getNotification(Context context, boolean clickToOpen) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_cloud_download_black_24dp)
-                .setContentTitle(mTitle)
+                .setContentTitle(getTitle(context))
                 .setContentText(mDescription)
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
