@@ -50,6 +50,7 @@ public class OpenProxyActivity extends Activity {
             SentItem sentItem = mSentItemsManager.checkedGetById(id);
             if (!sentItem.isRead()) {
                 sentItem.setRead(true);
+                sentItem.cancelNotification(getApplicationContext());
                 mSentItemsManager.save(getApplicationContext());
                 mSentItemsManager.notifyDataChanged();
             }

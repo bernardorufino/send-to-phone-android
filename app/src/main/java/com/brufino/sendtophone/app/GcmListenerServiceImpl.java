@@ -42,7 +42,7 @@ public class GcmListenerServiceImpl extends GcmListenerService {
         manager.insert(sentItem);
         manager.save(getApplicationContext());
 
-        int notifId = 31 * sentItem.hashCode() + manager.count();
+        int notifId = sentItem.getId();
         Notification notification;
         switch (actionType) {
             case "notification":

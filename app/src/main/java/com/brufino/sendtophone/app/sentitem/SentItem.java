@@ -1,5 +1,6 @@
 package com.brufino.sendtophone.app.sentitem;
 
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -129,6 +130,14 @@ public abstract class SentItem {
 
     public abstract String getType();
 
+    public void cancelNotification(Context context) {
+        checkState(mId != UNDEFINED_ID, "Can't cancel notification of an unsaved SentItem");
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(mId);
+    }
+
     public abstract Intent getOpenIntent(Context context);
 
     public Intent getOpenIntentProxy(Context context) {
@@ -147,6 +156,8 @@ public abstract class SentItem {
     }
 
     public NotificationCompat.Builder getNotification(Context context, boolean clickToOpen) {
+        checkState(mId != UNDEFINED_ID, "Can't generate notification without saving the object first");
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_cloud_download_black_24dp)
                 .setContentTitle(getTitle(context))
@@ -155,7 +166,7 @@ public abstract class SentItem {
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
         Intent intent = (clickToOpen) ? getOpenIntentProxy(context) : new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
-                context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                context, mId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
         return builder;
     }

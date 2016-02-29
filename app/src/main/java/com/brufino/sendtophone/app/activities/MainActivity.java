@@ -126,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Integer... params) {
             int position = params[0];
+            SentItem sentItem = mSentItemsList.get(position);
+            sentItem.cancelNotification(getApplicationContext());
             mSentItemsList.remove(position);
             mSentItemsManager.save(getApplicationContext());
             return null;
