@@ -19,7 +19,6 @@ public class SentItemViewHolder extends RecyclerView.ViewHolder {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormat.shortDate().withLocale(Locale.getDefault());
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormat.shortTime().withLocale(Locale.getDefault());
 
-//    private ImageView mColoredCircle;
     public TextView mDescriptionView;
     public ImageView mIconView;
     public TextView mTitleView;
@@ -33,7 +32,6 @@ public class SentItemViewHolder extends RecyclerView.ViewHolder {
         mIconView = (ImageView) itemView.findViewById(R.id.list_item_icon);
         mTitleView = (TextView) itemView.findViewById(R.id.list_item_title);
         mDescriptionView = (TextView) itemView.findViewById(R.id.list_item_description);
-//        mColoredCircle = (ImageView) itemView.findViewById(R.id.list_item_colored_circle);
         mDate = (TextView) itemView.findViewById(R.id.list_item_date);
         mTime = (TextView) itemView.findViewById(R.id.list_item_time);
         itemView.setOnClickListener(mOnClickListener);
