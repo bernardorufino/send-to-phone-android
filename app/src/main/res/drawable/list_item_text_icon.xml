@@ -10,11 +10,11 @@
 
     <item>
         <inset
-            android:insetTop="5dp"
-            android:insetRight="5dp"
-            android:insetBottom="5dp"
-            android:insetLeft="5dp"
-            android:drawable="@drawable/ic_format_quote_white_24dp"
+            android:insetTop="8dp"
+            android:insetRight="7dp"
+            android:insetBottom="7dp"
+            android:insetLeft="8dp"
+            android:drawable="@drawable/ic_content_copy_white_24dp"
             />
     </item>
 </layer-list>
