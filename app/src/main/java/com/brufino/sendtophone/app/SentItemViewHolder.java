@@ -43,7 +43,7 @@ public class SentItemViewHolder extends RecyclerView.ViewHolder {
         @Override
         public void onClick(View v) {
             Context context = v.getContext();
-            Intent intent = mSentItem.getOpenIntent(context);
+            Intent intent = mSentItem.getOpenIntentProxy(context);
             context.startActivity(intent);
             mSentItem.executeAfterOpened(context, v);
         }
@@ -52,11 +52,6 @@ public class SentItemViewHolder extends RecyclerView.ViewHolder {
     public void bind(SentItem sentItem) {
         mSentItem = sentItem;
         mIconView.setImageDrawable(sentItem.getIconDrawable(mIconView.getContext()));
-
-//        Drawable circleDrawable = ContextCompat.getDrawable(mColoredCircle.getContext(), R.drawable.list_item_circle);
-//        int circleColor = sentItem.getCircleColor(mColoredCircle.getContext());
-//        circleDrawable.setColorFilter(new PorterDuffColorFilter(circleColor, PorterDuff.Mode.MULTIPLY));
-//        mColoredCircle.setImageDrawable(circleDrawable);
 
         mTitleView.setText(sentItem.getTitle(mTitleView.getContext()));
         mDescriptionView.setText(sentItem.getDescription());
@@ -67,9 +62,11 @@ public class SentItemViewHolder extends RecyclerView.ViewHolder {
         if (!sentItem.isRead()) {
             mTitleView.setTypeface(null, Typeface.BOLD);
             mTitleView.setTextColor(ContextCompat.getColor(mTitleView.getContext(), R.color.listItemTitleUnread));
+            mDescriptionView.setTypeface(null, Typeface.BOLD);
         } else {
             mTitleView.setTypeface(null, Typeface.NORMAL);
             mTitleView.setTextColor(ContextCompat.getColor(mTitleView.getContext(), R.color.listItemTitleRead));
+            mDescriptionView.setTypeface(null, Typeface.NORMAL);
         }
     }
 }
