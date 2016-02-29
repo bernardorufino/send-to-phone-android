@@ -1,4 +1,4 @@
-package com.brufino.sendtophone.app;
+package com.brufino.sendtophone.app.sentitem;
 
 import android.content.Context;
 import com.google.common.base.Function;
@@ -68,8 +68,12 @@ public class SentItemsManager {
         return mSentItems;
     }
 
-    public List<SentItem> getSentItems() {
+    public List<SentItem> getAll() {
         return ImmutableList.copyOf(getBackingList());
+    }
+
+    public int count() {
+        return getBackingList().size();
     }
 
     public void insert(SentItem sentItem) {
