@@ -8,7 +8,6 @@ import com.brufino.sendtophone.app.sentitem.SentItemsManager;
 
 import static com.google.common.base.Preconditions.*;
 
-/* TODO: Dismiss notification when opening   */
 public class OpenProxyActivity extends Activity {
 
     public static final String EXTRA_INTENT = "extra_intent";
