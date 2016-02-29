@@ -3,6 +3,7 @@ package com.brufino.sendtophone.app;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import com.brufino.sendtophone.app.sentitem.SentItem;
 
 import java.util.List;
 

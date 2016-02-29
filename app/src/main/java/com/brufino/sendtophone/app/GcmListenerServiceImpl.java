@@ -1,92 +1,60 @@
 package com.brufino.sendtophone.app;
 
+import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import com.brufino.sendtophone.app.sentitem.SentItem;
+import com.brufino.sendtophone.app.sentitem.SentItemsManager;
 import com.google.android.gms.gcm.GcmListenerService;
+import org.joda.time.DateTime;
 
 public class GcmListenerServiceImpl extends GcmListenerService {
 
+    private NotificationManager mNotificationManager;
+
+    @Override
+    public void onCreate() {
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    }
+
     @Override
     public void onMessageReceived(String from, Bundle payload) {
+        String type = payload.getString("type");
         String title = payload.getString("title");
+        String description = payload.getString("description");
         String data = payload.getString("data");
-        String typeString = payload.getString("type");
-        if (typeString == null || title == null || data == null) {
-            /* TODO: More details */
+        DateTime date = DateTime.now();
+
+        if (type == null || title == null || description == null ||  data == null) {
             Log.e("S2P", "Malformed message received");
+            return;
         }
-        SentItem.Type type = SentItem.Type.valueOf(typeString);
+
         String actionType = payload.getString("action_type", "notification");
 
-        SentItem sentItem = new SentItem(title, data, type);
+        SentItem sentItem = SentItem.create(type, title, description, data, date);
 
         SentItemsManager manager = SentItemsManager.getInstance();
         manager.load(getApplicationContext());
         manager.insert(sentItem);
         manager.save(getApplicationContext());
 
+        int notifId = 31 * sentItem.hashCode() + manager.count();
+        Notification notification;
         switch (actionType) {
             case "notification":
-                createNotification(sentItem);
+                notification = sentItem.getNotification(this, true).build();
+                mNotificationManager.notify(notifId, notification);
                 break;
             case "open":
-                createAppNotification(sentItem);
-                open(sentItem);
+                notification = sentItem.getNotification(this, false).build();
+                mNotificationManager.notify(notifId, notification);
+                Intent intent = sentItem.getOpenIntent(this);
+                startActivity(intent);
                 break;
         }
-    }
-
-
-    private void open(SentItem sentItem) {
-        if (sentItem.getType() != SentItem.Type.URL) {
-            /* TODO */
-            return;
-        }
-        Uri url = Uri.parse(sentItem.getData());
-        Intent intent = new Intent(Intent.ACTION_VIEW, url);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    private void createAppNotification(SentItem sentItem) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_cloud_download_black_24dp)
-                .setContentTitle(sentItem.getTitle())
-                .setContentText(sentItem.getData())
-                .setAutoCancel(true)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-        Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(pendingIntent);
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
-    }
-
-    private void createNotification(SentItem sentItem) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_cloud_download_black_24dp)
-                .setContentTitle(sentItem.getTitle())
-                .setContentText(sentItem.getData())
-                .setAutoCancel(true)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-        if (sentItem.getType() == SentItem.Type.URL) {
-            Uri url = Uri.parse(sentItem.getData());
-            Intent intent = new Intent(Intent.ACTION_VIEW, url);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setContentIntent(pendingIntent);
-        } else {
-            Intent intent = new Intent(this, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setContentIntent(pendingIntent);
-        }
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
     }
 }

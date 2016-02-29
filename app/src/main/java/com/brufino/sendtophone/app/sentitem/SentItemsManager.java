@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableList;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.*;
@@ -38,14 +37,18 @@ public class SentItemsManager {
         }
         try {
             FileInputStream inputStream = context.openFileInput(FILE_NAME);
-            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-            //noinspection unchecked
-            mSentItems = (LinkedList<SentItem>) objectInputStream.readObject();
-            objectInputStream.close();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            mSentItems = new ArrayList<>();
+            SentItem sentItem = SentItem.read(bufferedReader);
+            while (sentItem != null) {
+                mSentItems.add(sentItem);
+                sentItem = SentItem.read(bufferedReader);
+            }
+            bufferedReader.close();
         } catch (FileNotFoundException e) {
             // Empty!
-            mSentItems = new LinkedList<>();
-        } catch (IOException | ClassNotFoundException e) {
+            mSentItems = new ArrayList<>();
+        } catch (IOException e) {
             /* TODO: Do something about this and use try with resources */
             throw Throwables.propagate(e);
         }
@@ -54,9 +57,11 @@ public class SentItemsManager {
     public void save(Context context) {
         try {
             FileOutputStream output = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(output);
-            objectOutputStream.writeObject(mSentItems);
-            objectOutputStream.close();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(output));
+            for (SentItem sentItem : mSentItems) {
+                sentItem.write(bufferedWriter);
+            }
+            bufferedWriter.close();
         } catch (IOException e) {
             /* TODO: Do something about this and use try with resources */
             throw Throwables.propagate(e);
@@ -64,7 +69,7 @@ public class SentItemsManager {
     }
 
     public List<SentItem> getBackingList() {
-        checkState(mSentItems != null, "Initialize object calling load() method");
+        checkState(mSentItems != null, "Initialize object calling load() method first");
         return mSentItems;
     }
 

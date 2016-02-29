@@ -13,6 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.Toast;
+import com.brufino.sendtophone.app.sentitem.SentItem;
+import com.brufino.sendtophone.app.sentitem.SentItemsManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.common.base.Function;
@@ -123,16 +125,21 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Integer... params) {
             int position = params[0];
             mSentItemsList.remove(position);
-            mSentItemsManager.notifyDataChanged();
             mSentItemsManager.save(MainActivity.this);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void param) {
-            Snackbar.make(mSentItemsRecyclerView, "Item removed", Snackbar.LENGTH_LONG)
-                    .setAction("UNDO", new UndoSentItemRemoveListener())
-                    .show();
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mSentItemsManager.notifyDataChanged();
+                    Snackbar.make(mSentItemsRecyclerView, "Item removed", Snackbar.LENGTH_LONG)
+                            .setAction("UNDO", new UndoSentItemRemoveListener())
+                            .show();
+                }
+            }, 150);
         }
     }
 
