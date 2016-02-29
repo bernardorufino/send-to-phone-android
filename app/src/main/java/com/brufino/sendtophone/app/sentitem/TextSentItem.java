@@ -37,11 +37,6 @@ public class TextSentItem extends SentItem {
 
     @Override
     public Drawable getIconDrawable(Context context) {
-        return ContextCompat.getDrawable(context, R.drawable.ic_format_quote_white_24dp);
-    }
-
-    @Override
-    public int getCircleColor(Context context) {
-        return ContextCompat.getColor(context, R.color.colorCircleText);
+        return ContextCompat.getDrawable(context, R.drawable.list_item_text_icon);
     }
 }

@@ -38,9 +38,4 @@ public class UrlSentItem extends SentItem {
         ResolveInfo info = infos.get(0);
         return info.loadIcon(packageManager);
     }
-
-    @Override
-    public int getCircleColor(Context context) {
-        return 0xFFCCCCCC;//ContextCompat.getColor(context, R.color.colorCircleUrl);
-    }
 }

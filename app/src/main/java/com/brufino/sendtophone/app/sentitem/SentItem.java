@@ -109,8 +109,6 @@ public abstract class SentItem {
 
     public abstract Drawable getIconDrawable(Context context);
 
-    public abstract int getCircleColor(Context context);
-
     public void executeAfterOpened(Context context, View view) {
         /* To be overriden */
     }
