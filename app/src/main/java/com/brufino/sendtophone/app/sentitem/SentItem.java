@@ -159,7 +159,7 @@ public abstract class SentItem {
         checkState(mId != UNDEFINED_ID, "Can't generate notification without saving the object first");
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_cloud_download_black_24dp)
+                .setSmallIcon(R.drawable.ic_cloud_download_white_24dp)
                 .setContentTitle(getTitle(context))
                 .setContentText(mDescription)
                 .setAutoCancel(true)
