@@ -1,8 +1,9 @@
-package com.brufino.sendtophone.app;
+package com.brufino.sendtophone.app.messaging;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
+import com.brufino.sendtophone.app.R;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 

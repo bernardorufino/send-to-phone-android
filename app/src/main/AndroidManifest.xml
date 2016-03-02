@@ -52,7 +52,7 @@
         </receiver>
 
         <service
-            android:name=".GcmListenerServiceImpl"
+            android:name=".messaging.GcmListenerServiceImpl"
             android:exported="false"
             >
             <intent-filter>
@@ -61,7 +61,7 @@
         </service>
 
         <service
-            android:name=".InstanceIdListenerServiceImpl"
+            android:name=".messaging.InstanceIdListenerServiceImpl"
             android:exported="false"
             >
             <intent-filter>
@@ -70,7 +70,7 @@
         </service>
 
         <service
-            android:name=".RegistrationIntentService"
+            android:name=".messaging.RegistrationIntentService"
             android:exported="false"
             />
 

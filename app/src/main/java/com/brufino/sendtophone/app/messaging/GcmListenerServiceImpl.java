@@ -1,4 +1,4 @@
-package com.brufino.sendtophone.app;
+package com.brufino.sendtophone.app.messaging;
 
 import android.app.Notification;
 import android.app.NotificationManager;

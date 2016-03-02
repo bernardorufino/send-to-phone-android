@@ -1,4 +1,4 @@
-package com.brufino.sendtophone.app;
+package com.brufino.sendtophone.app.messaging;
 
 import android.content.Intent;
 import com.google.android.gms.iid.InstanceIDListenerService;

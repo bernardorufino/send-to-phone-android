@@ -14,7 +14,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.Toast;
 import com.brufino.sendtophone.app.R;
-import com.brufino.sendtophone.app.RegistrationIntentService;
+import com.brufino.sendtophone.app.messaging.RegistrationIntentService;
 import com.brufino.sendtophone.app.SentItemsAdapter;
 import com.brufino.sendtophone.app.sentitem.SentItem;
 import com.brufino.sendtophone.app.sentitem.SentItemsManager;
