@@ -1,6 +1,7 @@
 package com.brufino.sendtophone.app.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,9 +14,10 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.Toast;
+import com.brufino.sendtophone.app.Preferences;
 import com.brufino.sendtophone.app.R;
-import com.brufino.sendtophone.app.messaging.RegistrationIntentService;
 import com.brufino.sendtophone.app.SentItemsAdapter;
+import com.brufino.sendtophone.app.messaging.RegistrationIntentService;
 import com.brufino.sendtophone.app.sentitem.SentItem;
 import com.brufino.sendtophone.app.sentitem.SentItemsManager;
 import com.google.android.gms.common.ConnectionResult;
@@ -23,16 +25,17 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.common.base.Function;
 
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    public static final String EXTRA_ACCOUNT_SNACK = "account_snack";
+    public static final String EXTRA_SNACK = "snack";
 
-    public static final Random RANDOM = new Random();
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private SentItemsManager mSentItemsManager;
     private List<SentItem> mSentItemsList;
+    private View mRootView;
     private Toolbar mToolbar;
     private RecyclerView mSentItemsRecyclerView;
     private LinearLayoutManager mListLayoutManager;
@@ -60,6 +63,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mRootView = findViewById(android.R.id.content);
+
+        SharedPreferences prefs = getSharedPreferences(Preferences.GENERAL_PREFERENCES, MODE_PRIVATE);
+        String userEmail = prefs.getString(Preferences.KEY_USER_EMAIL, null);
+        if (userEmail == null) {
+            Intent intent = new Intent(this, SetupActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        } else if (getIntent().getBooleanExtra(EXTRA_ACCOUNT_SNACK, false)) {
+            Snackbar.make(mRootView, userEmail, Snackbar.LENGTH_SHORT).show();
+        }
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -76,6 +91,11 @@ public class MainActivity extends AppCompatActivity {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mSentItemCallback);
         itemTouchHelper.attachToRecyclerView(mSentItemsRecyclerView);
+
+        String snack = getIntent().getStringExtra(EXTRA_SNACK);
+        if (snack != null) {
+            Snackbar.make(mRootView, snack, Snackbar.LENGTH_SHORT).show();
+        }
 
         if (hasGooglePlayServices()) {
             Intent intent = new Intent(this, RegistrationIntentService.class);

@@ -3,6 +3,7 @@ package com.brufino.sendtophone.app;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -41,8 +42,12 @@ public class SentItemViewHolder extends RecyclerView.ViewHolder {
         @Override
         public void onClick(View v) {
             Context context = v.getContext();
-            Intent intent = mSentItem.getOpenIntentProxy(context);
-            context.startActivity(intent);
+            Intent intent = mSentItem.getOpenIntentProxy(context, false);
+            if (intent == null) {
+                Snackbar.make(v, R.string.unresolved_activity_snack, Snackbar.LENGTH_SHORT).show();
+            } else {
+                context.startActivity(intent);
+            }
             mSentItem.executeAfterOpened(context, v);
         }
     };

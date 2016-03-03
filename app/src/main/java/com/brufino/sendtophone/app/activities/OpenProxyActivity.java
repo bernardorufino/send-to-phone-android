@@ -1,8 +1,10 @@
 package com.brufino.sendtophone.app.activities;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.AsyncTask;
+import com.brufino.sendtophone.app.R;
 import com.brufino.sendtophone.app.sentitem.SentItem;
 import com.brufino.sendtophone.app.sentitem.SentItemsManager;
 
@@ -35,7 +37,14 @@ public class OpenProxyActivity extends Activity {
             // Avoid triggering the task if the manager has loaded and the item has already been marked as read
         }
 
-        startActivity(intent);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            intent = new Intent(this, MainActivity.class);
+            intent.putExtra(MainActivity.EXTRA_SNACK, getString(R.string.unresolved_activity_snack));
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+        }
         finish();
     }
 

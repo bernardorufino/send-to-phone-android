@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryLight">#4558B9</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorControlNormal">#FFFFFF</color>
+    <color name="textOnPrimaryColor">#FFFFFF</color>
 
     <color name="colorCircleText">#777777</color>
     <color name="colorCircleUrl">#FF4081</color>
@@ -11,4 +13,11 @@
     <color name="listItemTitleUnread">#000000</color>
     <color name="listItemTitleRead">#444444</color>
     <color name="listItemDetail">#777777</color>
+
+    <color name="lightBackground">#22FFFFFF</color>
+
+    <color name="setupEmailItemPrimaryColor">#303F9F</color>
+    <color name="setupEmailItemClickableBackgroundColor">#EEFFFFFF</color>
+    <color name="setupEmailItemBackgroundColor">#D7FFFFFF</color>
+    <color name="setupEmailDividerBackgroundColor">#66FFFFFF</color>
 </resources>

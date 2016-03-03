@@ -49,10 +49,11 @@ public class GcmListenerServiceImpl extends GcmListenerService {
                 notification = sentItem.getNotification(this, true).build();
                 mNotificationManager.notify(notifId, notification);
                 break;
-            case "open":
+            case "launch":
                 notification = sentItem.getNotification(this, false).build();
                 mNotificationManager.notify(notifId, notification);
-                Intent intent = sentItem.getOpenIntentProxy(this);
+                Intent intent = sentItem.getOpenIntentProxy(this, true);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 break;
         }

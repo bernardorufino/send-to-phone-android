@@ -140,13 +140,24 @@ public abstract class SentItem {
 
     public abstract Intent getOpenIntent(Context context);
 
-    public Intent getOpenIntentProxy(Context context) {
+    public Intent getOpenIntentProxy(Context context, boolean redirectIfCantResolve) {
         checkState(mId != UNDEFINED_ID, "Can't get the proxied intent without saving the object first");
 
-        Intent intent = new Intent(context, OpenProxyActivity.class);
-        intent.putExtra(OpenProxyActivity.EXTRA_INTENT, getOpenIntent(context));
-        intent.putExtra(OpenProxyActivity.EXTRA_SENT_ITEM_ID, mId);
-        return intent;
+        Intent openIntent = getOpenIntent(context);
+        if (openIntent == null) {
+            if (redirectIfCantResolve) {
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra(MainActivity.EXTRA_SNACK, context.getString(R.string.unresolved_activity_snack));
+                return intent;
+            } else {
+                return null;
+            }
+        } else {
+            Intent intent = new Intent(context, OpenProxyActivity.class);
+            intent.putExtra(OpenProxyActivity.EXTRA_INTENT, openIntent);
+            intent.putExtra(OpenProxyActivity.EXTRA_SENT_ITEM_ID, mId);
+            return intent;
+        }
     }
 
     public abstract Drawable getIconDrawable(Context context);
@@ -164,7 +175,7 @@ public abstract class SentItem {
                 .setContentText(mDescription)
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-        Intent intent = (clickToOpen) ? getOpenIntentProxy(context) : new Intent(context, MainActivity.class);
+        Intent intent = (clickToOpen) ? getOpenIntentProxy(context, true) : new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context, mId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);

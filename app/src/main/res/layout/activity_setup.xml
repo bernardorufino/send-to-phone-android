@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimaryLight"
+    >
+
+    <LinearLayout
+        android:id="@+id/setup_view_ask_permission"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setup_permission_rationale"
+            android:textColor="@color/textOnPrimaryColor"
+            android:textSize="18sp"
+            />
+
+        <Button
+            android:id="@+id/setup_permission_request_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/setup_permission_request_button"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/setup_view_choose_email"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        >
+
+        <LinearLayout
+            android:id="@+id/setup_view_email_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:orientation="vertical"
+            >
+
+            <View
+                android:id="@+id/setup_choose_email_divider"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginBottom="15dp"
+                android:background="@color/setupEmailDividerBackgroundColor"
+                />
+
+            <LinearLayout
+                android:id="@+id/setup_choose_email_create"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <EditText
+                    android:id="@+id/setup_email_manual"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="textEmailAddress"
+                    style="@style/SetupEmailListItemStyle.TextView"
+                    android:drawableLeft="@drawable/setup_email_manual_icon"
+                    android:background="@drawable/setup_email_list_item_background"
+                    />
+
+                <ImageButton
+                    android:id="@+id/setup_email_manual_confirm_button"
+                    android:layout_width="56dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/setup_email_manual_enter_icon"
+                    android:layout_marginLeft="15dp"
+                    style="@style/SetupEmailListItemStyle"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
