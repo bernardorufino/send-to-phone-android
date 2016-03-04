@@ -16,14 +16,22 @@ public class UrlSentItem extends SentItem {
 
     public static final String TYPE = "url";
 
+    private ResolveInfo mUrlResolveInfo;
+    private String mTitle;
+    private Drawable mIconDrawable;
+
     public UrlSentItem(String title, String description, String data, DateTime date) {
         super(title, description, data, date);
     }
 
     @Override
     public String getTitle(Context context) {
+        if (mTitle != null) {
+            return mTitle;
+        }
         ResolveInfo info = resolveUrl(context);
-        return (info == null) ? getData() : info.loadLabel(context.getPackageManager()).toString();
+        mTitle = (info == null) ? getData() : info.loadLabel(context.getPackageManager()).toString();
+        return mTitle;
     }
 
     @Override
@@ -43,20 +51,27 @@ public class UrlSentItem extends SentItem {
 
     @Override
     public Drawable getIconDrawable(Context context) {
+        if (mIconDrawable != null) {
+            return mIconDrawable;
+        }
         ResolveInfo info = resolveUrl(context);
-        return (info == null)
-               ? ContextCompat.getDrawable(context, R.drawable.list_item_url_unreadable_icon)
-               : info.loadIcon(context.getPackageManager());
+        mIconDrawable = (info == null)
+                ? ContextCompat.getDrawable(context, R.drawable.list_item_url_unreadable_icon)
+                : info.loadIcon(context.getPackageManager());
+        return mIconDrawable;
     }
 
     private ResolveInfo resolveUrl(Context context) {
+        if (mUrlResolveInfo != null) {
+            return mUrlResolveInfo;
+        }
         Intent intent = getOpenIntent(context);
-        return (intent == null) ? null : resolveIntent(context, intent);
+        mUrlResolveInfo = (intent == null) ? null : resolveIntent(context, intent);
+        return mUrlResolveInfo;
     }
 
     private ResolveInfo resolveIntent(Context context, @NonNull Intent intent) {
         List<ResolveInfo> infos = context.getPackageManager().queryIntentActivities(intent, 0);
         return infos.isEmpty() ? null : infos.get(0);
     }
-
 }
