@@ -187,17 +187,22 @@ public abstract class SentItem {
 
         SentItem sentItem = (SentItem) other;
 
+        if (mId != sentItem.mId) return false;
         if (mRead != sentItem.mRead) return false;
-        if (!mDescription.equals(sentItem.mDescription)) return false;
+        if (mDescription != null ? !mDescription.equals(sentItem.mDescription) : sentItem.mDescription != null)
+            return false;
         if (!mTitle.equals(sentItem.mTitle)) return false;
-        return mData.equals(sentItem.mData);
+        if (!mData.equals(sentItem.mData)) return false;
+        return mDate.equals(sentItem.mDate);
     }
 
     @Override
     public int hashCode() {
-        int result = mDescription.hashCode();
+        int result = mId;
+        result = 31 * result + (mDescription != null ? mDescription.hashCode() : 0);
         result = 31 * result + mTitle.hashCode();
         result = 31 * result + mData.hashCode();
+        result = 31 * result + mDate.hashCode();
         result = 31 * result + (mRead ? 1 : 0);
         return result;
     }
