@@ -146,9 +146,7 @@ public abstract class SentItem {
         Intent openIntent = getOpenIntent(context);
         if (openIntent == null) {
             if (redirectIfCantResolve) {
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra(MainActivity.EXTRA_SNACK, context.getString(R.string.unresolved_activity_snack));
-                return intent;
+                return new Intent(context, MainActivity.class);
             } else {
                 return null;
             }
