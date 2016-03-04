@@ -10,10 +10,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.brufino.sendtophone.app.sentitem.SentItem;
+import com.brufino.sendtophone.app.sentitem.SentItemsManager;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Locale;
+
+import static com.google.common.base.Preconditions.checkState;
 
 public class SentItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -44,6 +47,8 @@ public class SentItemViewHolder extends RecyclerView.ViewHolder {
             Context context = v.getContext();
             Intent intent = mSentItem.getOpenIntentProxy(context, false);
             if (intent == null) {
+                checkState(mSentItem.getId() != SentItem.UNDEFINED_ID);
+                SentItemsManager.getInstance().triggerMarkItemAsRead(v.getContext(), mSentItem.getId());
                 Snackbar.make(v, R.string.unresolved_activity_snack, Snackbar.LENGTH_SHORT).show();
             } else {
                 context.startActivity(intent);

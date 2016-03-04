@@ -1,6 +1,7 @@
 package com.brufino.sendtophone.app.sentitem;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -77,6 +78,13 @@ public class SentItemsManager {
         }
     }
 
+    public void triggerMarkItemAsRead(Context context, int id) {
+        if (hasLoaded() && checkedGetById(id).isRead()) {
+            return;
+        }
+        new MarkSentItemAsReadTask().execute(context, id);
+    }
+
     public List<SentItem> getBackingList() {
         checkState(mSentItems != null, "Initialize object calling load() method first");
         return mSentItems;
@@ -123,5 +131,25 @@ public class SentItemsManager {
 
     public void addChangeListener(Function<? super List<SentItem>, Void> listener) {
         mListeners.add(listener);
+    }
+
+    /* TODO: Leak? */
+    private class MarkSentItemAsReadTask extends AsyncTask<Object, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Object... params) {
+            Context context = (Context) params[0];
+            int id = (int) params[1];
+
+            load(context);
+            SentItem sentItem = checkedGetById(id);
+            if (!sentItem.isRead()) {
+                sentItem.setRead(true);
+                sentItem.cancelNotification(context);
+                save(context);
+                notifyDataChanged();
+            }
+            return null;
+        }
     }
 }
