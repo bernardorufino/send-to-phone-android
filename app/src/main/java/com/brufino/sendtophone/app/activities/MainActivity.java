@@ -141,29 +141,24 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private class RemoveSentItemTask extends AsyncTask<Integer, Void, Void> {
+    private class RemoveSentItemTask extends AsyncTask<Integer, Void, Integer> {
 
         @Override
-        protected Void doInBackground(Integer... params) {
+        protected Integer doInBackground(Integer... params) {
             int position = params[0];
             SentItem sentItem = mSentItemsList.get(position);
             sentItem.cancelNotification(getApplicationContext());
             mSentItemsList.remove(position);
             mSentItemsManager.save(getApplicationContext());
-            return null;
+            return position;
         }
 
         @Override
-        protected void onPostExecute(Void param) {
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mSentItemsManager.notifyDataChanged();
-                    Snackbar.make(mSentItemsRecyclerView, "Item removed", Snackbar.LENGTH_LONG)
-                            .setAction("UNDO", new UndoSentItemRemoveListener())
-                            .show();
-                }
-            }, 100);
+        protected void onPostExecute(Integer position) {
+            mSentItemsManager.notifyDataChanged();
+            Snackbar.make(mSentItemsRecyclerView, "Item removed", Snackbar.LENGTH_LONG)
+                    //.setAction("UNDO", new UndoSentItemRemoveListener())
+                    .show();
         }
     }
 

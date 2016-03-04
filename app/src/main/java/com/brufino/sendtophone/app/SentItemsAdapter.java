@@ -8,9 +8,15 @@ import com.brufino.sendtophone.app.sentitem.SentItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkState;
+
 public class SentItemsAdapter extends RecyclerView.Adapter<SentItemViewHolder> {
 
     private List<SentItem> mList = new ArrayList<>();
+
+    public SentItemsAdapter() {
+        setHasStableIds(true);
+    }
 
     public void setBackingList(List<SentItem> sentItemBackingList) {
         mList = sentItemBackingList;
@@ -33,5 +39,12 @@ public class SentItemsAdapter extends RecyclerView.Adapter<SentItemViewHolder> {
     @Override
     public int getItemCount() {
         return mList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        int id = mList.get(position).getId();
+        checkState(id != SentItem.UNDEFINED_ID, "Can't have element without id in the list");
+        return id;
     }
 }

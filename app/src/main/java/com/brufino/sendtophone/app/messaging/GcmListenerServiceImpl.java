@@ -38,9 +38,7 @@ public class GcmListenerServiceImpl extends GcmListenerService {
         SentItem sentItem = SentItem.create(type, title, description, data, date);
 
         SentItemsManager manager = SentItemsManager.getInstance();
-        manager.load(getApplicationContext());
-        manager.insert(sentItem);
-        manager.save(getApplicationContext());
+        manager.insertAndSave(getApplicationContext(), 0, sentItem);
 
         int notifId = sentItem.getId();
         Notification notification;

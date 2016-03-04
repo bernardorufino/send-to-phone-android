@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableList;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -90,14 +89,6 @@ public class SentItemsManager {
         return mSentItems;
     }
 
-    public List<SentItem> getAll() {
-        return ImmutableList.copyOf(getBackingList());
-    }
-
-    public int count() {
-        return getBackingList().size();
-    }
-
     public SentItem getById(int id) {
         checkArgument(id != SentItem.UNDEFINED_ID, "Parameter id can't be undefined");
 
@@ -113,13 +104,13 @@ public class SentItemsManager {
         return checkNotNull(getById(id), "No SentItem found with id " + id);
     }
 
-    public void insert(SentItem sentItem) {
-        mSentItems.add(0, sentItem);
-        notifyDataChanged();
-    }
-
-    public void delete(int position) {
-        mSentItems.remove(position);
+    /**
+     * Loads the manager, inserts {@param sentItem} at {@param position} and saves.
+     */
+    public void insertAndSave(Context context, int position, SentItem sentItem) {
+        load(context);
+        mSentItems.add(position, sentItem);
+        save(context);
         notifyDataChanged();
     }
 
